@@ -30,6 +30,8 @@ namespace CSC446_Assignment_3_Nguyen
         public static double ValueR; //real
         public static string ValueL; //literal
 
+        public static LexicalAnalyzer Lexie;
+
         public static List<string> reservedWords;
 
         /// <summary>
@@ -69,7 +71,8 @@ namespace CSC446_Assignment_3_Nguyen
 
             while (ch != 65535 || ch != '\uffff')
             {
-                LexicalAnalyzer;
+                Lexie = new LexicalAnalyzer(nameFile);
+
                 DisplayToken();
             }
 
@@ -102,6 +105,7 @@ namespace CSC446_Assignment_3_Nguyen
             reader = new StreamReader(nameFile);
             ch = (char)reader.Read();
         }
+
 
         ///// <summary>
         ///// The ProcessToken will sort out what lexeme or data is and call the appropriate process token 

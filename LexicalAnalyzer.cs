@@ -62,7 +62,7 @@ namespace CSC446_Assignment_3_Nguyen
             //if Program.Lexeme has any of the below, assign it as whitespace
             else if (Program.Lexeme[0] == ' ' || Program.Lexeme[0] == '\r' || Program.Lexeme[0] == '\t' || Program.Lexeme[0] == '\n')
             {
-                Token = Symbols.whitespace;
+                Program.Token = Program.Symbols.whitespace;
             }
             else
             {
@@ -72,7 +72,7 @@ namespace CSC446_Assignment_3_Nguyen
             if (Program.Lexeme.Length > 27)
             {
                 Console.WriteLine("ERROR: Invalid Token. The Length cannot be more than 27.");
-                Token = Symbols.unknownt;
+                Program.Token = Program.Symbols.unknownt;
             }
         }
 
@@ -86,7 +86,7 @@ namespace CSC446_Assignment_3_Nguyen
                 GetNextChar();
             }
 
-            Token = Symbols.whitespace;
+            Program.Token = Program.Symbols.whitespace;
 
             GetNextChar();
         }
@@ -109,34 +109,34 @@ namespace CSC446_Assignment_3_Nguyen
             switch (Program.Lexeme.ToLower())
             {
                 case "if":
-                    Token = Symbols.ift;
+                    Program.Token = Program.Symbols.ift;
                     break;
                 case "else":
-                    Token = Symbols.elset;
+                    Program.Token = Program.Symbols.elset;
                     break;
                 case "while":
-                    Token = Symbols.whilet;
+                    Program.Token = Program.Symbols.whilet;
                     break;
                 case "float":
-                    Token = Symbols.floatt;
+                    Program.Token = Program.Symbols.floatt;
                     break;
                 case "int":
-                    Token = Symbols.intt;
+                    Program.Token = Program.Symbols.intt;
                     break;
                 case "char":
-                    Token = Symbols.chart;
+                    Program.Token = Program.Symbols.chart;
                     break;
                 case "break":
-                    Token = Symbols.breakt;
+                    Program.Token = Program.Symbols.breakt;
                     break;
                 case "continue":
-                    Token = Symbols.continuet;
+                    Program.Token = Program.Symbols.continuet;
                     break;
                 case "void":
-                    Token = Symbols.voidt;
+                    Program.Token = Program.Symbols.voidt;
                     break;
                 default:
-                    Token = Symbols.idt;
+                    Program.Token = Program.Symbols.idt;
                     break;
 
             }
@@ -162,18 +162,18 @@ namespace CSC446_Assignment_3_Nguyen
 
             if (Program.Lexeme[Program.Lexeme.Length - 1] == '.')
             {
-                Token = Symbols.unknownt;
-                Console.WriteLine("ERROR: On line" + LineNo + "contains an error");
+                Program.Token = Program.Symbols.unknownt;
+                Console.WriteLine("ERROR: On line" + Program.LineNo + "contains an error");
             }
             else if (Decimals == 1)
             {
-                ValueR = System.Convert.ToDouble(Program.Lexeme);
-                Token = Symbols.numt;
+                Program.ValueR = System.Convert.ToDouble(Program.Lexeme);
+                Program.Token = Program.Symbols.numt;
             }
             else
             {
                 Value = System.Convert.ToInt32(Program.Lexeme);
-                Token = Symbols.numt;
+                Program.Token = Program.Symbols.numt;
             }
         }
 
@@ -183,7 +183,7 @@ namespace CSC446_Assignment_3_Nguyen
         internal static void GetNextChar()
         {
             if (ch == 10)
-                LineNo++;
+                Program.LineNo++;
             ch = (char)reader.Read();
         }
 
@@ -193,14 +193,14 @@ namespace CSC446_Assignment_3_Nguyen
         internal static void ProcessLiteralToken()
         {
             bool hasEnding = false;
-            ValueL = "";
+            Program.ValueL = "";
 
             while (ch != 10 && !reader.EndOfStream && ch != '"')
             {
                 if (Program.Lexeme.Length < 17)
                     Program.Lexeme += ch;
 
-                ValueL += ch;
+                Program.ValueL += ch;
                 GetNextChar();
 
                 if (ch == '"')
@@ -212,12 +212,12 @@ namespace CSC446_Assignment_3_Nguyen
             }
             if (!hasEnding)
             {
-                Token = Symbols.unknownt;
-                Console.WriteLine("ERROR: On the line " + LineNo + " it is an incomplete literal");
+                Program.Token = Program.Symbols.unknownt;
+                Console.WriteLine("ERROR: On the line " + Program.LineNo + " it is an incomplete literal");
             }
             else
             {
-                Token = Symbols.literal;
+                Program.Token = Program.Symbols.literal;
             }
         }
 
@@ -232,30 +232,30 @@ namespace CSC446_Assignment_3_Nguyen
         internal static void DisplayToken()
         {
 
-            if (Token == Symbols.whitespace)
+            if (Program.Token == Program.Symbols.whitespace)
             {
                 return;
             }
 
-            if (Token == Symbols.eoftt)
+            if (Program.Token == Program.Symbols.eoftt)
             {
                 Program.Lexeme = "eoft";
             }
 
-            Console.Write(Token.ToString().PadRight(22, ' ') + Program.Lexeme.ToString().PadRight(20, ' '));
+            Console.Write(Program.Token.ToString().PadRight(22, ' ') + Program.Lexeme.ToString().PadRight(20, ' '));
 
-            if (Token == Symbols.numt)
+            if (Program.Token == Program.Symbols.numt)
             {
                 if (Program.Lexeme.Contains('.'))
-                    Console.Write("|| REAL NUM VALUE: " + ValueR);
+                    Console.Write("|| REAL NUM VALUE: " + Program.ValueR);
                 else
                     Console.Write("|| INT NUM VALUE: " + Value);
             }
 
-            else if (Token == Symbols.literal)
-                Console.Write("|| LITERAL VALUE: " + "\"" + ValueL + "\"");
+            else if (Program.Token == Program.Symbols.literal)
+                Console.Write("|| LITERAL VALUE: " + "\"" + Program.ValueL + "\"");
 
-            else if (Token == Symbols.unknownt)
+            else if (Program.Token == Program.Symbols.unknownt)
                 Console.Write("ERROR: Token is unknown");
 
             Console.Write("\n");
@@ -272,69 +272,69 @@ namespace CSC446_Assignment_3_Nguyen
                 case ">":
                 case "=":
                     {
-                        Token = Symbols.relopt;
+                        Program.Token = Program.Symbols.relopt;
                         break;
                     }
                 case ".":
                     {
-                        Token = Symbols.periodt;
+                        Program.Token = Program.Symbols.periodt;
                         break;
                     }
                 case "(":
                     {
-                        Token = Symbols.openParent;
+                        Program.Token = Program.Symbols.openParent;
                         break;
                     }
                 case ")":
                     {
-                        Token = Symbols.closeParent;
+                        Program.Token = Program.Symbols.closeParent;
                         break;
                     }
                 case "{":
                     {
-                        Token = Symbols.openCurlyParent;
+                        Program.Token = Program.Symbols.openCurlyParent;
                         break;
                     }
                 case "}":
                     {
-                        Token = Symbols.closeCurlyParent;
+                        Program.Token = Program.Symbols.closeCurlyParent;
                         break;
                     }
                 case "[":
                     {
-                        Token = Symbols.openSquareParent;
+                        Program.Token = Program.Symbols.openSquareParent;
                         break;
                     }
                 case "]":
                     {
-                        Token = Symbols.closeSquareParent;
+                        Program.Token = Program.Symbols.closeSquareParent;
                         break;
                     }
                 case ",":
                     {
-                        Token = Symbols.commat;
+                        Program.Token = Program.Symbols.commat;
                         break;
                     }
                 case "+":
                 case "-":
                 case "|":
                     {
-                        Token = Symbols.addopt;
+                        Program.Token = Program.Symbols.addopt;
                         break;
                     }
                 case ":":
                     {
-                        Token = Symbols.colont;
+                        Program.Token = Program.Symbols.colont;
                         break;
                     }
                 case ";":
                     {
-                        Token = Symbols.semit;
+                        Program.Token = Program.Symbols.semit;
                         break;
                     }
                 case "\"\"":
                     {
-                        Token = Symbols.quotet;
+                        Program.Token = Program.Symbols.quotet;
                         break;
                     }
                 case "&":
@@ -342,12 +342,12 @@ namespace CSC446_Assignment_3_Nguyen
                 case "*":
                 case "/":
                     {
-                        Token = Symbols.mulopt;
+                        Program.Token = Program.Symbols.mulopt;
                         break;
                     }
                 default:
                     {
-                        Token = Symbols.unknownt;
+                        Program.Token = Program.Symbols.unknownt;
                         break;
                     }
 
@@ -355,7 +355,7 @@ namespace CSC446_Assignment_3_Nguyen
 
             if (Program.Lexeme[0] == '=')
             {
-                Token = Symbols.assignopt;
+                Program.Token = Program.Symbols.assignopt;
             }
         }
 
@@ -372,42 +372,42 @@ namespace CSC446_Assignment_3_Nguyen
                     {
                         Program.Lexeme = Program.Lexeme[0].ToString() + ch.ToString();
 
-                        Token = Symbols.relopt;
+                        Program.Token = Program.Symbols.relopt;
                         GetNextChar();
                         break;
                     }
                 case ">=":
                     {
                         Program.Lexeme = Program.Lexeme[0].ToString() + ch.ToString();
-                        Token = Symbols.relopt;
+                        Program.Token = Program.Symbols.relopt;
                         GetNextChar();
                         break;
                     }
                 case "==":
                     {
                         Program.Lexeme = Program.Lexeme[0].ToString() + ch.ToString();
-                        Token = Symbols.relopt;
+                        Program.Token = Program.Symbols.relopt;
                         GetNextChar();
                         break;
                     }
                 case "!=":
                     {
                         Program.Lexeme = Program.Lexeme[0].ToString() + ch.ToString();
-                        Token = Symbols.relopt;
+                        Program.Token = Program.Symbols.relopt;
                         GetNextChar();
                         break;
                     }
                 case "||":
                     {
                         Program.Lexeme = Program.Lexeme[0].ToString() + ch.ToString();
-                        Token = Symbols.addopt;
+                        Program.Token = Program.Symbols.addopt;
                         GetNextChar();
                         break;
                     }
                 case "&&":
                     {
                         Program.Lexeme = Program.Lexeme[0].ToString() + ch.ToString();
-                        Token = Symbols.mulopt;
+                        Program.Token = Program.Symbols.mulopt;
                         GetNextChar();
                         break;
                     }
