@@ -172,6 +172,7 @@ namespace CSC446_Assignment_3_Nguyen
                 if (Lexeme[0] == '*' && ch == '/' || ch == '\uffff')
                 {
                     Console.WriteLine("ERROR: Invalid Comment. Comment does not end with a '*/'.");
+                    Token = Symbols.unknownt;
                     break;
                 }
                 else
