@@ -165,10 +165,33 @@ namespace CSC446_Assignment_3_Nguyen
         /// </summary>
         internal static void ProcessCommentToken()
         {
+
             while (Lexeme[0] != '*' && ch != '/') //until it reached */ of the comment, it will continue to turn everything to whitespace
             {
                 GetNextChar();
+                if (Lexeme[0] == '*' && ch != '/' || ch == '\uffff')
+                {
+                    Console.WriteLine("ERROR: Invalid Comment. Comment does not end with a '*/'.");
+                    break;
+                }
+                else
+                {
+                    continue;
+                }
             }
+
+            //if(Lexeme[0] == '*' && ch != '/')
+            //{
+            //    Console.WriteLine("ERROR: Invalid Comment. Comment does not end with a '*/'.");
+            //}
+            //else
+            //{
+                
+            //}
+            //if(ch == ' ')
+            //{ (Lexeme[0] != '*' && ch != '/')
+            //    Console.WriteLine("ERROR: Invalid Comment. Comment does not end with a '*/'.");
+            //}
 
             Token = Symbols.whitespace;
 
