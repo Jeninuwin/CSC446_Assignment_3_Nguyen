@@ -169,7 +169,7 @@ namespace CSC446_Assignment_3_Nguyen
             while (Lexeme[0] != '*' && ch != '/') //until it reached */ of the comment, it will continue to turn everything to whitespace
             {
                 GetNextChar();
-                if (Lexeme[0] == '*' && ch != '/' || ch == '\uffff')
+                if (Lexeme[0] == '*' && ch == '/' || ch == '\uffff')
                 {
                     Console.WriteLine("ERROR: Invalid Comment. Comment does not end with a '*/'.");
                     break;
