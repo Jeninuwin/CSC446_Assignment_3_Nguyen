@@ -1,288 +1,361 @@
-﻿using System;
-
-
-/// <summary>
-/// Assignment 3: creating a Parser
+﻿/// <summary>
+/// Name: Jenny Nguyen 
+/// Assignment: 3
+/// Description: This is a recursive descentparser for the CFG. This uses the information from the Lexical Analyzer and sorts them if they are in proper form
 /// </summary>
 namespace CSC446_Assignment_3_Nguyen
 {
-    class Parser
+    using System;
+
+    /// <summary>
+    /// Defines the <see cref="Parser" />.
+    /// </summary>
+    internal class Parser
     {
-        public static int count = 0;
+        /// <summary>
+        /// Defines the increments  while setting it to 0.
+        /// </summary>
+        public static int increments = 0;
+        public static string temp="";
+        /// <summary>
+        /// The Parse will grab the MatchToken list and will call Prog to start the parsing
+        /// </summary>
         public static void Parse()
         {
-            //Printing out the token list
-            for (int i = 0; i < Lexie.counting; i++)
-            {
-                Console.WriteLine(Lexie.MatchTokens[i]);
-            }
+            //Console.WriteLine(temp.PadRight(22, ' ') + "Tokens");
+            //Console.WriteLine(temp.PadRight(14, ' ') + "________________________");
+            //for (int i = 0; i < Lexie.counting; i++)
+            //{
+            //    Console.WriteLine(Lexie.MatchTokens[i].PadLeft(28, ' '));
+            //}
 
-
-            CallProg();
+            Prog();
         }
-        static void CallProg()
+
+        /// <summary>
+        /// The Prog sees if the the current MatchToken equals either int, float, or char. If it doesn't equal any of those go to eofft
+        /// </summary>
+        internal static void Prog()
         {
-            bool isComplete = false;
+            bool done = false; 
 
-            while (isComplete == false)
+            while (done == false) //if done is true it will exit the loop and prog will be completed
             {
-                //GetNextToken
-                if (Lexie.MatchTokens[count] == "intt" | Lexie.MatchTokens[count] == "floatt" | Lexie.MatchTokens[count] == "chart")
+                switch (Lexie.MatchTokens[increments])
                 {
-                    count++;
-                    if (Lexie.MatchTokens[count] == "idt")
-                    {
-                        count++;
-                        CallRest();
-                    }
+                    case "intt":
+                    case "floatt":
+                    case "chart":
+                        {
+                            increments++;
 
-                    else
+                            switch (Lexie.MatchTokens[increments]) //this will see if the MatchTokens will match "idt" if it does call Rest, else error
+                            {
+                                case "idt":
+                                    {
+                                        increments++;
+                                        Rest();
+                                        break;
+                                    }
+                                default:
+                                    {
+                                        Console.WriteLine("Error: " + Lexie.MatchTokens[increments] + " was found when searching for 'idt'. Not correct Grammar.");
+                                        Environment.Exit(1);
+                                        break;
+                                    }
+                            }
+                            break;
+                        }
+                    case "eoftt":
+                        done = true;
+                        break;
+                    default:
+                        {
+                            done = true;
+                            Console.WriteLine("Error: " + Lexie.MatchTokens[increments] +  " was found when searching for 'intt', 'floatt', or 'chart'. Not correct Grammar.");
+                            Environment.Exit(1);
+                            break;
+                        }
+                }
+
+            }
+        }
+
+        /// <summary>
+        /// The Rest will see if the MatchTokens fit either lparent, commat, or semit.
+        /// </summary>
+        internal static void Rest()
+        {
+            switch (Lexie.MatchTokens[increments])
+            {
+                case "lparent":
                     {
-                        Console.WriteLine("::ERROR:: Expected MatchTokens: idt. Got:" + Lexie.MatchTokens[count]);
+                        increments++;
+                        Paramlist();
+
+                        if (Lexie.MatchTokens[increments] == "rparent")
+                        {
+                            increments++;
+                            Compound();
+                        }
+                        break;
+                    }
+                case "semit":
+                case "commat":
+                    {
+                        IDTail();
+                        if (Lexie.MatchTokens[increments] == "semit")
+                        {
+                            increments++;
+                        }
+
+                        else
+                        {
+                            Console.WriteLine("Error:  " + Lexie.MatchTokens[increments] + " was found when searching for 'semit'. Not correct Grammar.");
+                            Environment.Exit(1);
+                        }
+                        break;
+                    }
+                //case "rparent":
+                //    break;
+                default:
+                    {
+                        Console.WriteLine("Error:  " + Lexie.MatchTokens[increments] + " was found when searching for 'semit', 'commat', or 'lparent'. Not correct Grammar.");
                         Environment.Exit(1);
+                        break;
                     }
-                }
-
-
-
-
-                else if (Lexie.MatchTokens[count] == "eoftt")
-                {
-                    isComplete = true;
-                }
-
-                else
-                {
-                    Console.WriteLine("::ERROR:: Expected MatchTokens: intt, floatt, or chart. Got:" + Lexie.MatchTokens[count]);
-                    isComplete = true;
-                    Environment.Exit(1);
-                }
             }
         }
 
-        static void CallRest()
+        /// <summary>
+        /// The Paramlist will see if the MatchTokens fit either int, float, char, or rparent
+        /// </summary>
+        internal static void Paramlist()
         {
-            if (Lexie.MatchTokens[count] == "lparent")
+            switch (Lexie.MatchTokens[increments])
             {
-                count++;
-                CallParamlist();
-
-                if (Lexie.MatchTokens[count] == "rparent")
-                {
-                    count++;
-                    CallCompound();
-                }
-
-            }
-
-            else if (Lexie.MatchTokens[count] == "commat" || Lexie.MatchTokens[count] == "semit")
-            {
-                CallIDTail();
-                if (Lexie.MatchTokens[count] == "semit")
-                {
-                    count++;
-                }
-
-                else
-                {
-                    Console.WriteLine("::ERROR:: Expected MatchTokens: semit. Got: " + Lexie.MatchTokens[count]);
-                    Environment.Exit(1);
-                }
-            }
-
-            else
-            {
-                Console.WriteLine("::ERROR:: Expected MatchTokens: lparent, commat, or semit. Got: " + Lexie.MatchTokens[count]);
-                Environment.Exit(1);
-            }
-        }
-
-        static void CallParamlist()
-        {
-            if (Lexie.MatchTokens[count] == "intt" | Lexie.MatchTokens[count] == "floatt" | Lexie.MatchTokens[count] == "chart")
-            {
-                count++;
-                if (Lexie.MatchTokens[count] == "idt")
-                {
-                    count++;
-                    CallParamTail();
-                }
-
-                else
-                {
-                    Console.WriteLine("::ERROR:: Expected MatchTokens: idt. Got: " + Lexie.MatchTokens[count]);
-                    Environment.Exit(1);
-                }
-            }
-
-            else if (Lexie.MatchTokens[count] == "rparent")
-            {
-
-            }
-
-            else
-            {
-                Console.WriteLine("::ERROR:: Expected MatchTokens: rparent. Got: " + Lexie.MatchTokens[count]);
-                Environment.Exit(1);
-
-            }
-        }
-
-        static void CallParamTail()
-        {
-            if (Lexie.MatchTokens[count] == "commat")
-            {
-                count++;
-                if (Lexie.MatchTokens[count] == "intt" | Lexie.MatchTokens[count] == "floatt" | Lexie.MatchTokens[count] == "chart")
-                {
-                    count++;
-                    if (Lexie.MatchTokens[count] == "idt")
+                case "intt":
+                case "floatt":
+                case "chart":
                     {
-                        count++;
-                        CallParamTail();
+                        increments++;
+                        if (Lexie.MatchTokens[increments] == "idt")
+                        {
+                            increments++;
+                            ParamTail();
+                        }
+
+                        else
+                        {
+                            Console.WriteLine("Error: " + Lexie.MatchTokens[increments] + " was found when searching for 'idt'. Not correct Grammar."); Environment.Exit(1);
+                        }
+                        break;
                     }
-
-                    else
+                case "rparent":
+                    break;
+                default:
                     {
-                        Console.WriteLine("::ERROR:: Expected MatchTokens: idt. Got: " + Lexie.MatchTokens[count]);
+                        Console.WriteLine("Error: " + Lexie.MatchTokens[increments] + " was found when searching for 'rparent'. Not correct Grammar."); Environment.Exit(1);
+                        break;
+                    }
+            }
+        }
+
+        /// <summary>
+        /// The ParamTail will see if the MatchTokens fit either int, float, char, or rparent
+        /// </summary>
+        internal static void ParamTail()
+        {
+            switch (Lexie.MatchTokens[increments])
+            {
+                case "commat":
+                    {
+                        increments++;
+
+                        if (Lexie.MatchTokens[increments] == "intt" | Lexie.MatchTokens[increments] == "floatt" | Lexie.MatchTokens[increments] == "chart")
+                        {
+                            increments++;
+
+                            switch (Lexie.MatchTokens[increments]) //this will see if the MatchTokens will match "idt" if it does call Rest, else error
+                            {
+                                case "idt":
+                                    {
+                                        increments++;
+                                        ParamTail();
+                                        break;
+                                    }
+                                default:
+                                    {
+                                        Console.WriteLine("Error: " + Lexie.MatchTokens[increments] + " was found when searching for 'idt'. Not correct Grammar.");
+                                        Environment.Exit(1);
+                                        break;
+                                    }
+                            }
+                        }
+
+                        else
+                        {
+                            Console.WriteLine("Error: " + Lexie.MatchTokens[increments] + " was found when searching for 'intt', 'floatt', or 'chart'. Not correct Grammar.");
+                            Environment.Exit(1);
+
+                        }
+                        break;
+                    }
+                case "rparent":
+                    break;
+                default:
+                    {
+                        Console.WriteLine("Error: " + Lexie.MatchTokens[increments] + " was found when searching for 'rparent'. Not correct Grammar."); Environment.Exit(1);
                         Environment.Exit(1);
-
+                        break;
                     }
-                }
-
-                else
-                {
-                    Console.WriteLine("::ERROR:: Expected MatchTokens: intt, floatt, or chart. Got:" + Lexie.MatchTokens[count]);
-                    Environment.Exit(1);
-
-                }
-
-            }
-
-            else if (Lexie.MatchTokens[count] == "rparent")
-            {
-
-            }
-
-            else
-            {
-                Console.WriteLine("::ERROR:: Expected MatchTokens: rparent. Got: " + Lexie.MatchTokens[count]);
-                Environment.Exit(1);
 
             }
         }
 
-        static void CallCompound()
+        /// <summary>
+        /// The Compound will see if the MatchTokens start with a '{' if not then it's an error 
+        /// </summary>
+        internal static void Compound()
         {
-            if (Lexie.MatchTokens[count] == "openCurlyParent")
+            switch (Lexie.MatchTokens[increments])
             {
-                count++;
-                CallDecl();
-                if (Lexie.MatchTokens[count] == "closeCurlyParent")
-                {
-                    count++;
-                    CallProg();
-                    if (Lexie.MatchTokens[count] == "eoftt")
+                case "openCurlyParent":
                     {
+                        increments++;
+                        Decl();
+                        if (Lexie.MatchTokens[increments] == "closeCurlyParent")
+                        {
+                            increments++;
+                            Prog();
+                            if (Lexie.MatchTokens[increments] == "eoftt")
+                            {
+                                break;
+                            }
+                        }
+
+                        else
+                        {
+                            Console.WriteLine("Error: " + Lexie.MatchTokens[increments] + " was found when searching for 'closeCurlyParent'. Not correct Grammar.");
+                            Environment.Exit(1);
+
+                        }
+                        break;
+                    }
+                default:
+                    {
+                        Console.WriteLine("Error: " + Lexie.MatchTokens[increments] + " was found when searching for 'openCurlyParent'. Not correct Grammar.");
+                        Environment.Exit(1);
+                        break;
+                    }
+            }
+        }
+
+        /// <summary>
+        /// The Decl will see if the MatchToken matches either int, float, char, or '}'. If it doesn't then it will throw an error
+        /// </summary>
+        internal static void Decl()
+        {
+            switch (Lexie.MatchTokens[increments])
+            {
+                case "intt":
+                case "floatt":
+                case "chart":
+                    {
+                        increments++;
+                        IDList();
+                        break;
+                    }
+                case "closeCurlyParent":
+                    {
+                        break;
+                    }
+                default:
+                    {
+                        Console.WriteLine("Error: " + Lexie.MatchTokens[increments] + " was found when searching for 'intt', 'floatt', or 'chart'. Not correct Grammar.");
+                        Environment.Exit(1);
+                        break;
+                    }
+            }
+
+        }
+
+        /// <summary>
+        /// The IDList will see if the MatchToken Matches with idt and semit after. if not then an error has occurred
+        /// </summary>
+        internal static void IDList()
+        {
+            switch (Lexie.MatchTokens[increments])
+            {
+                case "idt":
+                    {
+                        increments++;
+                        IDTail();
+
+                        switch (Lexie.MatchTokens[increments])
+                        {
+                            case "semit":
+                                {
+                                    increments++;
+                                    Decl();
+                                    break;
+                                }
+                            default:
+                                {
+                                    Console.WriteLine("Error: " + Lexie.MatchTokens[increments] + " was found when searching for 'semit'. Not correct Grammar.");
+                                    Environment.Exit(1);
+                                    break;
+                                }
+                        }
+                        break;
+                    }
+                default:
+                    {
+                        Console.WriteLine("Error: " + Lexie.MatchTokens[increments] + " was found when searching for 'idt'. Not correct Grammar.");
+                        Environment.Exit(1);
+                        break;
+                    }
+            }
+        }
+
+        /// <summary>
+        /// The IDTail will see if the MatchToken matches with Commat or Semmit. If it doesn't then it's an error
+        /// </summary>
+        internal static void IDTail()
+        {
+            switch (Lexie.MatchTokens[increments])
+            {
+                case "commat":
+                    {
+                        increments++;
+                        switch (Lexie.MatchTokens[increments])
+                        {
+                            case "idt":
+                                {
+                                    increments++;
+                                    IDTail();
+                                    break;
+                                }
+                            default:
+                                {
+                                    Console.WriteLine("Error: " + Lexie.MatchTokens[increments] + " was found when searching for 'idt'. Not correct Grammar.");
+                                    Environment.Exit(1);
+                                    break;
+                                }
+                        }
+                        break;
+                    }
+                case "semit":
+                    {
+                        break;
 
                     }
-                }
-
-                else
-                {
-                    Console.WriteLine("::ERROR:: Expected MatchTokens: closeCurlyParent. Got: " + Lexie.MatchTokens[count]);
-                    Environment.Exit(1);
-
-                }
-            }
-
-            else
-            {
-                Console.WriteLine("::ERROR:: Expected MatchTokens: openCurlyParent. Got: " + Lexie.MatchTokens[count]);
-                Environment.Exit(1);
-
-            }
-        }
-
-        static void CallDecl()
-        {
-            if (Lexie.MatchTokens[count] == "intt" | Lexie.MatchTokens[count] == "floatt" | Lexie.MatchTokens[count] == "chart")
-            {
-                count++;
-                CallIDList();
-            }
-
-            else if (Lexie.MatchTokens[count] == "closeCurlyParent")
-            {
-
-            }
-
-            else
-            {
-                Console.WriteLine("::ERROR:: Expected MatchTokens: intt, floatt, or chart. Got:" + Lexie.MatchTokens[count]);
-                Environment.Exit(1);
-
-            }
-        }
-
-        static void CallIDList()
-        {
-            if (Lexie.MatchTokens[count] == "idt")
-            {
-                count++;
-                CallIDTail();
-                if (Lexie.MatchTokens[count] == "semit")
-                {
-                    count++;
-                    CallDecl();
-                }
-
-                else
-                {
-                    Console.WriteLine("::ERROR:: Expected MatchTokens: semit. Got: " + Lexie.MatchTokens[count]);
-                    Environment.Exit(1);
-
-                }
-            }
-
-            else
-            {
-                Console.WriteLine("::ERROR:: Expected MatchTokens: idt. Got: " + Lexie.MatchTokens[count]);
-                Environment.Exit(1);
-
-            }
-        }
-
-        static void CallIDTail()
-        {
-            if (Lexie.MatchTokens[count] == "commat")
-            {
-                count++;
-                if (Lexie.MatchTokens[count] == "idt")
-                {
-                    count++;
-                    CallIDTail();
-                }
-
-                else
-                {
-                    Console.WriteLine("::ERROR:: Expected MatchTokens: idt. Got: " + Lexie.MatchTokens[count]);
-                    Environment.Exit(1);
-
-                }
-
-            }
-
-            else if (Lexie.MatchTokens[count] == "semit")
-            {
-
-            }
-
-            else
-            {
-                Console.WriteLine("::ERROR:: Expected MatchTokens: semit. Got: " + Lexie.MatchTokens[count]);
-                Environment.Exit(1);
-
+                default:
+                    {
+                        Console.WriteLine("Error: " + Lexie.MatchTokens[increments] + " was found when searching for 'semit'. Not correct Grammar.");
+                        Environment.Exit(1);
+                        break;
+                    }
             }
         }
     }

@@ -1,4 +1,10 @@
-﻿namespace CSC446_Assignment_3_Nguyen
+﻿/// <summary>
+/// Name: Jenny Nguyen 
+/// Assignment: 3
+/// Description: This is a recursive descentparser for the CFG. This uses the information from the Lexical Analyzer and sorts them if they are in proper form
+/// </summary>
+/// 
+namespace CSC446_Assignment_3_Nguyen
 {
     using System;
     using System.Collections.Generic;

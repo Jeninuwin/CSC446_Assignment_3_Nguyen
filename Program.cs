@@ -1,5 +1,7 @@
 ﻿/// <summary>
-/// 
+/// Name: Jenny Nguyen 
+/// Assignment: 3
+/// Description: This is a recursive descentparser for the CFG. This uses the information from the Lexical Analyzer and sorts them if they are in proper form
 /// </summary>
 
 using System;
@@ -18,9 +20,9 @@ namespace CSC446_Assignment_3_Nguyen
         {
         start:
             Lexie.LexicalAnalyzer(args);
-            Console.WriteLine("Lexical Analyzer completed. Commencing Parser.");
+            Console.WriteLine("Lexical Analyzer completed. Commencing Parser.\n");
             Parser.Parse();
-            Console.WriteLine("Parser completed completed.");
+            Console.WriteLine("\nParser completed completed.");
 
 
             string continueProgram;
@@ -39,7 +41,7 @@ namespace CSC446_Assignment_3_Nguyen
                 Lexie.MatchTokens.Clear();
                 Lexie.Token.Equals(null);
                 Lexie.counting = 0;
-                Parser.count = 0;
+                Parser.increments = 0;
                 goto start;
             }
             else
