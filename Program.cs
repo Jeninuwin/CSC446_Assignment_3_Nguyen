@@ -16,10 +16,12 @@ namespace CSC446_Assignment_3_Nguyen
     {
         static void Main(string[] args)
         {
+        start:
             Lexie.LexicalAnalyzer(args);
             Console.WriteLine("Lexical Analyzer completed. Commencing Parser.");
             Parser.Parse();
             Console.WriteLine("Parser completed completed.");
+
 
             string continueProgram;
 
@@ -33,7 +35,12 @@ namespace CSC446_Assignment_3_Nguyen
             }
             else if (continueProgram.ToLower() == "y")
             {
-                Lexie.LexicalAnalyzer(args);
+                Console.Clear();
+                Lexie.MatchTokens.Clear();
+                Lexie.Token.Equals(null);
+                Lexie.counting = 0;
+                Parser.count = 0;
+                goto start;
             }
             else
             {

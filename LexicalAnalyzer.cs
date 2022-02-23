@@ -71,7 +71,7 @@
         public static int counting;
 
         /// <summary>
-        /// The Main.
+        /// The main lexical analyzer that reads the file and calls the process token
         /// </summary>
         /// <param name="args">The args<see cref="string[]"/>.</param>
         public static void LexicalAnalyzer(string[] args)
@@ -411,37 +411,37 @@
         /// <summary>
         /// The DisplayToken will display on the console what the results are.
         /// </summary>
-        public static void DisplayToken()
-        {
+        //public static void DisplayToken()
+        //{
 
-            if (Token == Symbols.whitespace)
-            {
-                return;
-            }
+        //    if (Token == Symbols.whitespace)
+        //    {
+        //        return;
+        //    }
 
-            if (Token == Symbols.eoftt)
-            {
-                Lexeme = "eoft";
-            }
+        //    if (Token == Symbols.eoftt)
+        //    {
+        //        Lexeme = "eoft";
+        //    }
 
-            Console.Write(Token.ToString().PadRight(22, ' ') + Lexeme.ToString().PadRight(20, ' '));
+        //    Console.Write(Token.ToString().PadRight(22, ' ') + Lexeme.ToString().PadRight(20, ' '));
 
-            if (Token == Symbols.numt)
-            {
-                if (Lexeme.Contains('.'))
-                    Console.Write("|| REAL NUM VALUE: " + ValueR);
-                else
-                    Console.Write("|| INT NUM VALUE: " + Value);
-            }
+        //    if (Token == Symbols.numt)
+        //    {
+        //        if (Lexeme.Contains('.'))
+        //            Console.Write("|| REAL NUM VALUE: " + ValueR);
+        //        else
+        //            Console.Write("|| INT NUM VALUE: " + Value);
+        //    }
 
-            else if (Token == Symbols.literalt)
-                Console.Write("|| LITERAL VALUE: " + "\"" + ValueL + "\"");
+        //    else if (Token == Symbols.literalt)
+        //        Console.Write("|| LITERAL VALUE: " + "\"" + ValueL + "\"");
 
-            else if (Token == Symbols.unknownt)
-                Console.Write("ERROR: Token is unknown");
+        //    else if (Token == Symbols.unknownt)
+        //        Console.Write("ERROR: Token is unknown");
 
-            Console.Write("\n");
-        }
+        //    Console.Write("\n");
+        //}
 
         /// <summary>
         /// The ProcessSingleToken will process any alone symbols and assign them the correct symbol.
@@ -555,23 +555,15 @@
                         counting++;
                         break;
                     }
-                case "65535":
-                    {
-                        Token = Symbols.eoftt;
-                        MatchTokens.Add("eoftt");
-                        counting++;
-                        break;
-                    }
-                default:
-                    {
-                        Token = Symbols.unknownt;
-                        MatchTokens.Add("unknownt");
-                        counting++;
-                        break;
-                    }
 
             };
 
+            if(Lexeme[0] == 65535)
+            {
+                Token = Symbols.eoftt;
+                MatchTokens.Add("eoftt");
+                counting++;
+            }
             if (Lexeme[0] == '=')
             {
                 Token = Symbols.assignopt;
@@ -644,23 +636,15 @@
                         GetNextChar();
                         break;
                     }
-                case "65535":
-                    {
-                        Token = Symbols.eoftt;
-                        MatchTokens.Add("eoftt");
-                        counting++;
-                        break;
-                    }
-                default:
-                    {
-                        Token = Symbols.unknownt;
-                        MatchTokens.Add("unknownt");
-                        counting++;
-                        break;
-                    }
 
             };
-            
+            if (Lexeme[0] == 65535) //if this reaches the end of the file set it to eoft
+            {
+                Token = Symbols.eoftt;
+                MatchTokens.Add("eoftt");
+                counting++;
+            }
+
         }
     }
 }

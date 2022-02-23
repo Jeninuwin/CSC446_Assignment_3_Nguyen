@@ -8,7 +8,7 @@ namespace CSC446_Assignment_3_Nguyen
 {
     class Parser
     {
-        static int count = 0;
+        public static int count = 0;
         public static void Parse()
         {
             //Printing out the token list
